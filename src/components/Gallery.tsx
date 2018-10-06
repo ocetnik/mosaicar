@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import GalleryStore from "../store";
 import { IImage } from "../types";
+import Image from "./Image";
 import Pagination from "./Pagination";
 
 interface IGalleryProps {
@@ -15,17 +16,6 @@ interface IGalleryState {
 @inject('galleryStore')
 @observer
 class Gallery extends React.Component<IGalleryProps, IGalleryState> {
-    private static renderImage() {
-        return (image: IImage) => (
-            <img
-                key={image.id}
-                srcSet={image.link}
-                width="50"
-                height="50"
-            />
-        );
-    }
-
     constructor(props: IGalleryProps) {
         super(props);
         this.state = {
@@ -47,8 +37,9 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     }
 
     public render() {
-        const images = this.props.galleryStore.imgurGalleryImages;
-        const renderImages = images.map(Gallery.renderImage());
+        const renderImages = this.props.galleryStore.imgurGalleryImages.map(
+            (image: IImage) => <Image key={image.id} link={image.link} />
+        );
 
         return (
             <div>
