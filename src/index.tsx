@@ -5,7 +5,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Router } from 'react-router';
 
-import App from './App';
+import App from './app/App';
 import GalleryStore from "./gallery/GalleryStore";
 import registerServiceWorker from './registerServiceWorker';
 

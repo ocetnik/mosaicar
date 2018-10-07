@@ -2,10 +2,10 @@ import DevTools from 'mobx-react-devtools';
 import * as React from 'react';
 import { Route } from 'react-router';
 
-import Gallery from "./gallery/Gallery";
-import Home from "./home/Home";
-import Mosaic from "./mosaic/Mosaic";
-import { GALLERY, MOSAIC } from "./routing/RoutingConstants";
+import Gallery from "../gallery/Gallery";
+import Home from "../home/Home";
+import Mosaic from "../mosaic/Mosaic";
+import { GALLERY, MOSAIC } from "../routing/RoutingConstants";
 
 class App extends React.Component<{}, {}> {
     private renderMobxReactDevTools = process.env.NODE_ENV !== 'production' ? <DevTools /> : null;
