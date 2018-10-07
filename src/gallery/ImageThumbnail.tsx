@@ -2,7 +2,7 @@ import { inject } from "mobx-react";
 import * as React from "react";
 
 import { RouterStore } from "mobx-react-router";
-import { MOSAIC } from "../constants/routes";
+import { getPathToMosaicConversion } from "../routing/RoutingUtils";
 
 interface IImageThumbnailProps {
     routing?: RouterStore;
@@ -15,7 +15,7 @@ class ImageThumbnail extends React.Component<IImageThumbnailProps, {}> {
         const { link } = this.props;
 
         const onImageClick = () => {
-            this.props.routing!.push(`${MOSAIC}?link=${encodeURIComponent(link)}`);
+            this.props.routing!.push(getPathToMosaicConversion(link));
         };
 
         return (

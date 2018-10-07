@@ -7,14 +7,15 @@ import ImageThumbnail from "./ImageThumbnail";
 import Pagination from "./Pagination";
 
 interface IGalleryProps {
-    gallery: GalleryStore
+    gallery: GalleryStore;
+    routing?: any;
 }
 
 interface IGalleryState {
-    pageNumber: number
+    pageNumber: number;
 }
 
-@inject('gallery')
+@inject('gallery', 'routing')
 @observer
 class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     constructor(props: IGalleryProps) {
@@ -38,12 +39,16 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     }
 
     public render() {
+        const { goBack } = this.props.routing;
+        const onBackClick = () => goBack();
+
         const renderImages = this.props.gallery.imgurGalleryImages.map(
             (image: IImage) => <ImageThumbnail key={image.id} link={image.link} />
         );
 
         return (
             <div>
+                <button onClick={onBackClick}>Back</button>
                 <Pagination
                     onPrevPageClick={this.handlePrevPageClick}
                     onNextPageClick={this.handleNextPageClick}

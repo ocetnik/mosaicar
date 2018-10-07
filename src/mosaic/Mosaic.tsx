@@ -37,16 +37,15 @@ class Mosaic extends React.Component<IMosaicProps, {}> {
         );
     }
 
-    private getOrigImageLink(): string {
-        const uriParams = new URLSearchParams(this.props.location.search);
-        const origImageLink = uriParams.get('link');
+    private getOrigImageUri(): string {
+        const origImageUri = this.props.location.state.imageUri;
 
         // TODO better error handling
-        if (!origImageLink) {
-            throw Error('Missing image link');
+        if (!origImageUri) {
+            throw Error('Missing image URI');
         }
 
-        return origImageLink;
+        return origImageUri;
     }
 
     private getCanvasContext(width: number, height: number): CanvasRenderingContext2D {
@@ -64,7 +63,7 @@ class Mosaic extends React.Component<IMosaicProps, {}> {
     }
 
     private async createCanvasImage() {
-        const imageElement = await getImageElementFromUri(this.getOrigImageLink());
+        const imageElement = await getImageElementFromUri(this.getOrigImageUri());
 
         const canvasWidth = calculateCanvasWidth(imageElement.width, TILE_SIZE);
         const canvasHeight = calculateCanvasHeight(imageElement.height, TILE_SIZE);
