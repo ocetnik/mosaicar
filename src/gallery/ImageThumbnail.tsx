@@ -6,21 +6,21 @@ import { getPathToMosaicConversion } from "../routing/RoutingUtils";
 
 interface IImageThumbnailProps {
     routing?: RouterStore;
-    link: string;
+    imageUri: string;
 }
 
 @inject('routing')
 class ImageThumbnail extends React.Component<IImageThumbnailProps, {}> {
     public render() {
-        const { link } = this.props;
+        const { imageUri } = this.props;
 
         const onImageClick = () => {
-            this.props.routing!.push(getPathToMosaicConversion(link));
+            this.props.routing!.push(getPathToMosaicConversion(imageUri));
         };
 
         return (
             <img
-                srcSet={link}
+                srcSet={imageUri}
                 width="50"
                 height="50"
                 onClick={onImageClick}

@@ -43,7 +43,7 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
         const onBackClick = () => goBack();
 
         const renderImages = this.props.gallery.imgurGalleryImages.map(
-            (image: IImage) => <ImageThumbnail key={image.id} link={image.link} />
+            (image: IImage) => <ImageThumbnail key={image.id} imageUri={image.link} />
         );
 
         return (

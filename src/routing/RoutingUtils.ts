@@ -1,10 +1,10 @@
 import { MOSAIC } from "./RoutingConstants";
 
-export function getPathToMosaicConversion(link: string) {
+export function getPathToMosaicConversion(imageUri: string) {
     return {
         pathname: MOSAIC,
         state: {
-            imageUri: link
+            imageUri
         }
     };
 }
