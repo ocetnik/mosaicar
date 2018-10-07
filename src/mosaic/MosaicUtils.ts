@@ -1,4 +1,4 @@
-import { IRgbColor } from "../types";
+import { IRgbColor } from "./MosaicTypes";
 
 // final canvas width will be multiple of tile size to avoid incomplete tiles
 export function calculateCanvasWidth(origImgWidth: number, tileSize: number): number {

@@ -1,7 +1,7 @@
 import { action, configure, observable, runInAction } from 'mobx';
 
-import { fetchImagesPage } from "../api";
-import { IImage } from "../types";
+import { fetchImagesPage } from "./GalleryApi";
+import { IImage } from "./GalleryTypes";
 
 configure({ enforceActions: 'observed' });
 

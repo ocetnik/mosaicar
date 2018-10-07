@@ -1,8 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
+import GalleryStore from "./GalleryStore";
 
-import GalleryStore from "../store/gallery";
-import { IImage } from "../types";
+import { IImage } from "./GalleryTypes";
 import ImageThumbnail from "./ImageThumbnail";
 import Pagination from "./Pagination";
 

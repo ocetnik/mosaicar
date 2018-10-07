@@ -8,7 +8,7 @@ import {
     calculateCanvasWidth,
     getAverageTileColor,
     getImageElementFromUri
-} from "./mosaicUtils";
+} from "./MosaicUtils";
 
 const TILE_SIZE = 16;
 

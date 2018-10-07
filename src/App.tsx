@@ -2,8 +2,8 @@ import DevTools from 'mobx-react-devtools';
 import * as React from 'react';
 import { Route } from 'react-router';
 
-import Gallery from "./components/Gallery";
 import { MOSAIC } from "./constants/routes";
+import Gallery from "./gallery/Gallery";
 import Mosaic from "./mosaic/Mosaic";
 
 class App extends React.Component<{}, {}> {

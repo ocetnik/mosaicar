@@ -1,4 +1,4 @@
-import { IGallery, IImage } from "../types";
+import { IGallery, IImage } from "./GalleryTypes";
 
 const IMGUR_CLIENT_ID = '8c1b6dffe0e52fc';
 const IMGUR_ENDPOINT = 'https://api.imgur.com/3';

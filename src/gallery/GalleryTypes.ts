@@ -8,9 +8,3 @@ export interface IGallery {
     status: number,
     success: boolean
 }
-
-export interface IRgbColor {
-    r: number;
-    g: number;
-    b: number;
-}
