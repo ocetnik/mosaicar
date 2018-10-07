@@ -1,4 +1,5 @@
 import { action, configure, observable, runInAction } from 'mobx';
+
 import { fetchImagesPage } from "../api";
 import { IImage } from "../types";
 

@@ -1,7 +1,10 @@
 import DevTools from 'mobx-react-devtools';
 import * as React from 'react';
+import { Route } from 'react-router';
+
 import Gallery from "./components/Gallery";
-import GalleryStore from "./store";
+import { MOSAIC } from "./constants/routes";
+import Mosaic from "./mosaic/Mosaic";
 
 class App extends React.Component<{}, {}> {
     private renderMobxReactDevTools = process.env.NODE_ENV !== 'production' ? <DevTools /> : null;
@@ -9,7 +12,8 @@ class App extends React.Component<{}, {}> {
     public render() {
         return (
             <div className="App">
-                <Gallery galleryStore={new GalleryStore} />
+                <Route exact={true} path="/" component={Gallery} />
+                <Route path={MOSAIC} component={Mosaic} />
                 {this.renderMobxReactDevTools}
             </div>
         );

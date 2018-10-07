@@ -1,19 +1,20 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import GalleryStore from "../store";
+
+import GalleryStore from "../store/gallery";
 import { IImage } from "../types";
-import Image from "./Image";
+import ImageThumbnail from "./ImageThumbnail";
 import Pagination from "./Pagination";
 
 interface IGalleryProps {
-    galleryStore: GalleryStore
+    gallery: GalleryStore
 }
 
 interface IGalleryState {
     pageNumber: number
 }
 
-@inject('galleryStore')
+@inject('gallery')
 @observer
 class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     constructor(props: IGalleryProps) {
@@ -37,8 +38,8 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     }
 
     public render() {
-        const renderImages = this.props.galleryStore.imgurGalleryImages.map(
-            (image: IImage) => <Image key={image.id} link={image.link} />
+        const renderImages = this.props.gallery.imgurGalleryImages.map(
+            (image: IImage) => <ImageThumbnail key={image.id} link={image.link} />
         );
 
         return (
@@ -54,7 +55,7 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     }
 
     private fetchNewImages() {
-        this.props.galleryStore.fetchImgurImages(this.state.pageNumber);
+        this.props.gallery.fetchImgurImages(this.state.pageNumber);
     }
 
     private handlePrevPageClick() {
