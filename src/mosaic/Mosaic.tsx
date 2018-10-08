@@ -1,28 +1,41 @@
 import { Location } from 'history';
 import { inject } from "mobx-react";
 import * as React from "react";
-import { createRef } from "react";
+import { createRef, RefObject } from "react";
 
+import MosaicStore from "./MosaicStore";
 import {
     calculateCanvasHeight,
     calculateCanvasWidth,
     getAverageTileColor,
     getImageElementFromUri
 } from "./MosaicUtils";
+import Share from "./Share";
 
 const TILE_SIZE = 16;
 
 interface IMosaicProps {
     routing?: any;
+    mosaicStore?: MosaicStore;
     location: Location;
 }
 
-@inject('routing')
-class Mosaic extends React.Component<IMosaicProps, {}> {
-    private canvasRef = createRef<HTMLCanvasElement>();
+interface IMosaicState {
+    base64Image?: string;
+}
 
-    public async componentDidMount() {
-        await this.createCanvasImage();
+@inject('mosaicStore', 'routing')
+class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
+    private canvasRef: RefObject<HTMLCanvasElement>;
+
+    constructor(props: IMosaicProps) {
+        super(props);
+        this.state = {
+            base64Image: undefined
+        };
+        this.canvasRef = createRef<HTMLCanvasElement>();
+        this.handleConvertClick = this.handleConvertClick.bind(this);
+        this.props.mosaicStore!.resetSharedMosaicLink();
     }
 
     public render() {
@@ -32,6 +45,15 @@ class Mosaic extends React.Component<IMosaicProps, {}> {
         return (
             <div>
                 <button onClick={onBackClick}>Back</button>
+                {
+                    this.state.base64Image
+                        ? <Share
+                            base64Image={this.state.base64Image}
+                        />
+                        : <button onClick={this.handleConvertClick}>
+                            Convert image into a mosaic
+                        </button>
+                }
                 <canvas ref={this.canvasRef} />
             </div>
         );
@@ -84,6 +106,14 @@ class Mosaic extends React.Component<IMosaicProps, {}> {
                 ctx.fill();
             }
         }
+    }
+
+    private async handleConvertClick() {
+        await this.createCanvasImage().then(() => {
+            this.setState({
+                base64Image: this.canvasRef.current!.toDataURL().replace('data:image/png;base64,', '')
+            });
+        });
     }
 }
 

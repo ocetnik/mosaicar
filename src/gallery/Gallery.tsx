@@ -2,12 +2,12 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import GalleryStore from "./GalleryStore";
 
-import { IImage } from "./GalleryTypes";
+import { IImage } from "../imgur/ImgurTypes";
 import ImageThumbnail from "./ImageThumbnail";
 import Pagination from "./Pagination";
 
 interface IGalleryProps {
-    gallery: GalleryStore;
+    galleryStore: GalleryStore;
     routing?: any;
 }
 
@@ -15,7 +15,7 @@ interface IGalleryState {
     pageNumber: number;
 }
 
-@inject('gallery', 'routing')
+@inject('galleryStore', 'routing')
 @observer
 class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     constructor(props: IGalleryProps) {
@@ -29,46 +29,54 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     }
 
     public componentDidMount() {
-        this.fetchNewImages();
+        this.getNewImages();
     }
 
     public componentDidUpdate(_: IGalleryProps, prevState: IGalleryState) {
         if (this.state.pageNumber !== prevState.pageNumber) {
-            this.fetchNewImages()
+            this.getNewImages()
         }
     }
 
     public render() {
         const { goBack } = this.props.routing;
         const onBackClick = () => goBack();
+        const backButton = <button onClick={onBackClick}>Back</button>;
 
-        const renderImages = this.props.gallery.imgurGalleryImages.map(
+        const pagination = <Pagination
+            onPrevPageClick={this.handlePrevPageClick}
+            onNextPageClick={this.handleNextPageClick}
+            pageNumber={this.state.pageNumber}
+        />;
+
+        const renderImages = this.props.galleryStore.images.map(
             (image: IImage) => <ImageThumbnail key={image.id} imageUri={image.link} />
         );
 
         return (
             <div>
-                <button onClick={onBackClick}>Back</button>
-                <Pagination
-                    onPrevPageClick={this.handlePrevPageClick}
-                    onNextPageClick={this.handleNextPageClick}
-                    pageNumber={this.state.pageNumber}
-                />
+                {backButton}
+                {pagination}
                 {renderImages}
             </div>
         );
     }
 
-    private fetchNewImages() {
-        this.props.gallery.fetchImgurImages(this.state.pageNumber);
+    private getNewImages() {
+        this.props.galleryStore.getGalleryImages(this.state.pageNumber);
     }
 
     private handlePrevPageClick() {
-        this.setState({ pageNumber: this.state.pageNumber - 1 });
+        const pageNumber = this.state.pageNumber - 1;
+        if (pageNumber < 1) {
+            throw Error('Page number must be greater than 0');
+        }
+        this.setState({ pageNumber });
     }
 
     private handleNextPageClick() {
-        this.setState({ pageNumber: this.state.pageNumber + 1 });
+        const pageNumber = this.state.pageNumber + 1;
+        this.setState({ pageNumber });
     }
 }
 

@@ -7,17 +7,19 @@ import { Router } from 'react-router';
 
 import App from './app/App';
 import GalleryStore from "./gallery/GalleryStore";
+import MosaicStore from "./mosaic/MosaicStore";
 import registerServiceWorker from './registerServiceWorker';
 
 import './index.css';
 
 const browserHistory = createBrowserHistory();
-const routingStore = new RouterStore();
-const history = syncHistoryWithStore(browserHistory, routingStore);
+const routerStore = new RouterStore();
+const history = syncHistoryWithStore(browserHistory, routerStore);
 
 const stores = {
-    gallery: new GalleryStore(),
-    routing: routingStore,
+    galleryStore: new GalleryStore(),
+    mosaicStore: new MosaicStore(),
+    routing: routerStore,
 };
 
 ReactDOM.render(

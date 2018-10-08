@@ -1,24 +1,23 @@
 import { action, configure, observable, runInAction } from 'mobx';
 
-import { fetchImagesPage } from "./GalleryApi";
-import { IImage } from "./GalleryTypes";
+import { StoreState } from "../app/AppTypes";
+import { fetchGallery } from "../imgur/ImgurApi";
+import { IImage } from "../imgur/ImgurTypes";
 
 configure({ enforceActions: 'observed' });
 
-type StoreState = 'pending' | 'done' | 'error';
-
 class GalleryStore {
-    @observable public imgurGalleryImages: IImage[] = [];
+    @observable public images: IImage[] = [];
     @observable public state: StoreState = 'pending';
 
-    @action('Fetch Imgur images')
-    public async fetchImgurImages(pageNumber: number) {
-        this.imgurGalleryImages = [];
+    @action('Get gallery images')
+    public async getGalleryImages(pageNumber: number) {
+        this.images = [];
         this.state = 'pending';
 
         try {
-            const imagesPage = await fetchImagesPage(pageNumber);
-            const images = imagesPage.map(
+            const gallery = await fetchGallery(pageNumber);
+            const images = gallery.map(
                 (image: IImage) => {
                     return {
                         id: image.id,
@@ -29,11 +28,11 @@ class GalleryStore {
 
             runInAction('Update gallery images', () => {
                 this.state = 'done';
-                this.imgurGalleryImages = images;
+                this.images = images;
             });
         }
         catch (_) {
-            runInAction('Error during fetching Imgur images', () => {
+            runInAction('Error during getting images', () => {
                 this.state = 'error';
             })
         }
