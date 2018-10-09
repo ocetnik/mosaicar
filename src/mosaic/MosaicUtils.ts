@@ -1,16 +1,23 @@
-import { IRgbColor } from "./MosaicTypes";
-
-// final canvas width will be multiple of tile size to avoid incomplete tiles
-export function calculateCanvasWidth(origImgWidth: number, tileSize: number): number {
+// final (mosaic) image width will be multiple of tile size to avoid incomplete tiles
+export function calculateImageWidth(origImgWidth: number, tileSize: number): number {
     return Math.floor(origImgWidth / tileSize) * tileSize;
 }
 
-// final canvas height will be multiple of tile size to avoid incomplete tiles
-export function calculateCanvasHeight(origImgHeight: number, tileSize: number): number {
+// final (mosaic) image height will be multiple of tile size to avoid incomplete tiles
+export function calculateImageHeight(origImgHeight: number, tileSize: number): number {
     return Math.floor(origImgHeight / tileSize) * tileSize;
 }
 
-export function getAverageTileColor(tile: ImageData): IRgbColor {
+function rgbToHex(r: number, g: number, b: number) {
+    function componentToHex(component: number) {
+        const hex = component.toString(16);
+        return hex.length === 1 ? "0" + hex : hex;
+    }
+
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+export function getAverageTileColor(tile: ImageData): string {
     const data = tile.data;
     const dataLength = data.length;
     const pixelLength = dataLength / 4;
@@ -25,13 +32,14 @@ export function getAverageTileColor(tile: ImageData): IRgbColor {
         b += data[i + 2];
     }
 
-    // tslint:disable:object-literal-sort-keys
-    return {
-        r: r / pixelLength,
-        g: g / pixelLength,
-        b: b / pixelLength
-    };
-    // tslint:enable:object-literal-sort-keys
+    // ~~ is faster than Math.floor (the largest integer less than or equal to a given number)
+    // tslint:disable:no-bitwise
+    return rgbToHex(
+        ~~(r / pixelLength),
+        ~~(g / pixelLength),
+        ~~(b / pixelLength)
+    );
+    // tslint:enable:no-bitwise
 }
 
 export async function getImageElementFromUri(imageUri: string): Promise<HTMLImageElement> {

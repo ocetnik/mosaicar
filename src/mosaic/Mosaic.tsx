@@ -5,12 +5,13 @@ import { createRef, RefObject } from "react";
 
 import MosaicStore from "./MosaicStore";
 import {
-    calculateCanvasHeight,
-    calculateCanvasWidth,
+    calculateImageHeight,
+    calculateImageWidth,
     getAverageTileColor,
     getImageElementFromUri
 } from "./MosaicUtils";
 import Share from "./Share";
+import Tiles from "./Tiles";
 
 const TILE_SIZE = 16;
 
@@ -22,6 +23,9 @@ interface IMosaicProps {
 
 interface IMosaicState {
     base64Image?: string;
+    imageHeight: number;
+    imageWidth: number;
+    tiles: JSX.Element[];
 }
 
 @inject('mosaicStore', 'routing')
@@ -31,7 +35,10 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
     constructor(props: IMosaicProps) {
         super(props);
         this.state = {
-            base64Image: undefined
+            base64Image: undefined,
+            imageHeight: 0,
+            imageWidth: 0,
+            tiles: []
         };
         this.canvasRef = createRef<HTMLCanvasElement>();
         this.handleConvertClick = this.handleConvertClick.bind(this);
@@ -55,6 +62,11 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
                         </button>
                 }
                 <canvas ref={this.canvasRef} />
+                <Tiles
+                    tiles={this.state.tiles}
+                    imageWidth={this.state.imageWidth}
+                    imageHeight={this.state.imageHeight}
+                />
             </div>
         );
     }
@@ -86,26 +98,34 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
 
     private async createCanvasImage() {
         const imageElement = await getImageElementFromUri(this.getOrigImageUri());
+        const imageWidth = calculateImageWidth(imageElement.width, TILE_SIZE);
+        const imageHeight = calculateImageHeight(imageElement.height, TILE_SIZE);
 
-        const canvasWidth = calculateCanvasWidth(imageElement.width, TILE_SIZE);
-        const canvasHeight = calculateCanvasHeight(imageElement.height, TILE_SIZE);
-
-        const ctx = this.getCanvasContext(canvasWidth, canvasHeight);
-
+        const ctx = this.getCanvasContext(imageWidth, imageHeight);
         ctx.drawImage(imageElement, 0, 0);
 
-        for (let sx = 0; sx < canvasWidth; sx += TILE_SIZE) {
-            for (let sy = 0; sy < canvasHeight; sy += TILE_SIZE) {
+        const tiles = [];
+        const radius = TILE_SIZE / 2;
+
+        for (let sx = 0; sx < imageWidth; sx += TILE_SIZE) {
+            for (let sy = 0; sy < imageHeight; sy += TILE_SIZE) {
                 const origTile = ctx.getImageData(sx, sy, TILE_SIZE, TILE_SIZE);
                 const avgColor = getAverageTileColor(origTile);
-                ctx.clearRect(sx, sy, TILE_SIZE, TILE_SIZE);
-                ctx.beginPath();
-                const radius = TILE_SIZE / 2;
-                ctx.fillStyle = `rgb(${avgColor.r}, ${avgColor.g}, ${avgColor.b})`;
-                ctx.arc(sx + radius, sy + radius, radius, 0, 2 * Math.PI);
-                ctx.fill();
+
+                tiles.push(
+                    <ellipse
+                        key={`${sx}_${sy}`}
+                        cx={sx + radius}
+                        cy={sy + radius}
+                        rx={radius}
+                        ry={radius}
+                        style={{ fill: avgColor }}
+                    />
+                );
             }
         }
+
+        this.setState({ imageHeight, imageWidth, tiles });
     }
 
     private async handleConvertClick() {
