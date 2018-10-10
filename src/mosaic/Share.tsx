@@ -1,5 +1,6 @@
 import { inject, observer } from "mobx-react";
 import * as React from "react";
+
 import MosaicStore from "./MosaicStore";
 
 interface IShareProps {
@@ -11,9 +12,8 @@ interface IShareProps {
 @observer
 class Share extends React.Component<IShareProps, {}> {
     public render() {
-        const base64Image = this.props.base64Image;
         const linkToUploadedImage = this.props.mosaicStore!.sharedMosaicLink;
-        const onShareButtonClick = () => this.props.mosaicStore!.shareMosaic(base64Image);
+        const onShareButtonClick = () => this.props.mosaicStore!.shareMosaic(this.props.base64Image);
         // TODO add loading (click -> shared)
 
         return (

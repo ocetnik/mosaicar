@@ -8,7 +8,7 @@ export function calculateImageHeight(origImgHeight: number, tileSize: number): n
     return Math.floor(origImgHeight / tileSize) * tileSize;
 }
 
-function rgbToHex(r: number, g: number, b: number) {
+function rgbToHex(r: number, g: number, b: number): string {
     function componentToHex(component: number) {
         const hex = component.toString(16);
         return hex.length === 1 ? "0" + hex : hex;

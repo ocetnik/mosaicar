@@ -2,6 +2,7 @@ import { Location } from 'history';
 import { inject } from "mobx-react";
 import * as React from "react";
 import { createRef, RefObject } from "react";
+import { renderToString } from 'react-dom/server';
 
 import MosaicStore from "./MosaicStore";
 import {
@@ -11,7 +12,6 @@ import {
     getImageElementFromUri
 } from "./MosaicUtils";
 import Share from "./Share";
-import Tiles from "./Tiles";
 
 const TILE_SIZE = 16;
 
@@ -22,23 +22,37 @@ interface IMosaicProps {
 }
 
 interface IMosaicState {
-    base64Image?: string;
     imageHeight: number;
     imageWidth: number;
-    tiles: JSX.Element[];
+    svgMosaicString: string;
 }
 
 @inject('mosaicStore', 'routing')
 class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
+    private static getSvgMosaicString(
+        imageWidth: number,
+        imageHeight: number,
+        tiles: JSX.Element[]
+    ) {
+        return renderToString(
+            <svg
+                width={imageWidth}
+                height={imageHeight}
+                viewBox={`0 0 ${imageWidth} ${imageHeight}`}
+            >
+                {tiles}
+            </svg>
+        );
+    }
+
     private canvasRef: RefObject<HTMLCanvasElement>;
 
     constructor(props: IMosaicProps) {
         super(props);
         this.state = {
-            base64Image: undefined,
             imageHeight: 0,
             imageWidth: 0,
-            tiles: []
+            svgMosaicString: ''
         };
         this.canvasRef = createRef<HTMLCanvasElement>();
         this.handleConvertClick = this.handleConvertClick.bind(this);
@@ -53,20 +67,16 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
             <div>
                 <button onClick={onBackClick}>Back</button>
                 {
-                    this.state.base64Image
-                        ? <Share
-                            base64Image={this.state.base64Image}
-                        />
-                        : <button onClick={this.handleConvertClick}>
+                    this.state.svgMosaicString === ''
+                        ? <button onClick={this.handleConvertClick}>
                             Convert image into a mosaic
                         </button>
+                        : <Share
+                            base64Image={''/*TODO*/}
+                        />
                 }
                 <canvas ref={this.canvasRef} />
-                <Tiles
-                    tiles={this.state.tiles}
-                    imageWidth={this.state.imageWidth}
-                    imageHeight={this.state.imageHeight}
-                />
+                <div dangerouslySetInnerHTML={{ __html: this.state.svgMosaicString }} />
             </div>
         );
     }
@@ -96,7 +106,7 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
         throw Error('Failed to get canvas context');
     }
 
-    private async createCanvasImage() {
+    private async createMosaicImage() {
         const imageElement = await getImageElementFromUri(this.getOrigImageUri());
         const imageWidth = calculateImageWidth(imageElement.width, TILE_SIZE);
         const imageHeight = calculateImageHeight(imageElement.height, TILE_SIZE);
@@ -125,15 +135,13 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
             }
         }
 
-        this.setState({ imageHeight, imageWidth, tiles });
+        const svgMosaicString = Mosaic.getSvgMosaicString(imageWidth, imageHeight, tiles);
+
+        this.setState({ svgMosaicString });
     }
 
     private async handleConvertClick() {
-        await this.createCanvasImage().then(() => {
-            this.setState({
-                base64Image: this.canvasRef.current!.toDataURL().replace('data:image/png;base64,', '')
-            });
-        });
+        await this.createMosaicImage();
     }
 }
 
