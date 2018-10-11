@@ -1,18 +1,23 @@
 import { Location } from 'history';
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import * as React from "react";
 import { createRef, RefObject } from "react";
 import { renderToString } from 'react-dom/server';
+import { svgAsPngUri } from 'save-svg-as-png';
+
+import { MAX_IMGUR_API_FILE_UPLOAD_SIZE } from "../imgur/ImgurConstants";
 
 import MosaicStore from "./MosaicStore";
 import {
     calculateImageHeight,
     calculateImageWidth,
     getAverageTileColor,
+    getCanvasContext,
     getImageElementFromUri
 } from "./MosaicUtils";
-import Share from "./Share";
+import Share from './Share';
 
+const MOSAIC_SVG_ELEMENT_ID = 'mosaic-image';
 const TILE_SIZE = 16;
 
 interface IMosaicProps {
@@ -22,12 +27,11 @@ interface IMosaicProps {
 }
 
 interface IMosaicState {
-    imageHeight: number;
-    imageWidth: number;
     svgMosaicString: string;
 }
 
 @inject('mosaicStore', 'routing')
+@observer
 class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
     private static getSvgMosaicString(
         imageWidth: number,
@@ -39,9 +43,18 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
                 width={imageWidth}
                 height={imageHeight}
                 viewBox={`0 0 ${imageWidth} ${imageHeight}`}
+                id={MOSAIC_SVG_ELEMENT_ID}
             >
                 {tiles}
             </svg>
+        );
+    }
+
+    private static async getPngDataUriFromSvgDocumentElement() {
+        return await svgAsPngUri(
+            document.getElementById(MOSAIC_SVG_ELEMENT_ID),
+            {},
+            (uri: string) => uri
         );
     }
 
@@ -50,17 +63,18 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
     constructor(props: IMosaicProps) {
         super(props);
         this.state = {
-            imageHeight: 0,
-            imageWidth: 0,
             svgMosaicString: ''
         };
         this.canvasRef = createRef<HTMLCanvasElement>();
-        this.handleConvertClick = this.handleConvertClick.bind(this);
+        this.handleConvertButtonClick = this.handleConvertButtonClick.bind(this);
+        this.handleShareButtonClick = this.handleShareButtonClick.bind(this);
         this.props.mosaicStore!.resetSharedMosaicLink();
     }
 
     public render() {
         const { goBack } = this.props.routing;
+        const linkToUploadedImage = this.props.mosaicStore!.sharedMosaicLink;
+
         const onBackClick = () => goBack();
 
         return (
@@ -68,14 +82,19 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
                 <button onClick={onBackClick}>Back</button>
                 {
                     this.state.svgMosaicString === ''
-                        ? <button onClick={this.handleConvertClick}>
+                        ? <button
+                            onClick={this.handleConvertButtonClick}
+                        >
                             Convert image into a mosaic
                         </button>
                         : <Share
-                            base64Image={''/*TODO*/}
+                            linkToUploadedImage={linkToUploadedImage}
+                            onShareButtonClick={this.handleShareButtonClick}
                         />
                 }
-                <canvas ref={this.canvasRef} />
+                <div>
+                    <canvas ref={this.canvasRef} />
+                </div>
                 <div dangerouslySetInnerHTML={{ __html: this.state.svgMosaicString }} />
             </div>
         );
@@ -92,26 +111,13 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
         return origImageUri;
     }
 
-    private getCanvasContext(width: number, height: number): CanvasRenderingContext2D {
-        const canvas = this.canvasRef.current;
-        if (canvas) {
-            const ctx = canvas.getContext("2d");
-            if (ctx) {
-                canvas.width = width;
-                canvas.height = height;
-                return ctx;
-            }
-        }
-
-        throw Error('Failed to get canvas context');
-    }
-
-    private async createMosaicImage() {
+    private async getSvgMosaicString(): Promise<string> {
         const imageElement = await getImageElementFromUri(this.getOrigImageUri());
         const imageWidth = calculateImageWidth(imageElement.width, TILE_SIZE);
         const imageHeight = calculateImageHeight(imageElement.height, TILE_SIZE);
 
-        const ctx = this.getCanvasContext(imageWidth, imageHeight);
+        const canvas = this.canvasRef.current;
+        const ctx = getCanvasContext(imageWidth, imageHeight, canvas);
         ctx.drawImage(imageElement, 0, 0);
 
         const tiles = [];
@@ -135,13 +141,24 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
             }
         }
 
-        const svgMosaicString = Mosaic.getSvgMosaicString(imageWidth, imageHeight, tiles);
+        return Mosaic.getSvgMosaicString(imageWidth, imageHeight, tiles);
+    }
 
+    private async handleConvertButtonClick() {
+        const svgMosaicString = await this.getSvgMosaicString();
         this.setState({ svgMosaicString });
     }
 
-    private async handleConvertClick() {
-        await this.createMosaicImage();
+    private async handleShareButtonClick() {
+        const pngDataUri = await Mosaic.getPngDataUriFromSvgDocumentElement();
+        const base64ImageData = pngDataUri.replace('data:image/png;base64,', '');
+        const fileSize = atob(base64ImageData).length;
+        if (fileSize > MAX_IMGUR_API_FILE_UPLOAD_SIZE) {
+            // TODO
+            console.log(`Cannot upload image bigger than ${MAX_IMGUR_API_FILE_UPLOAD_SIZE.toLocaleString()} bytes.`); // tslint:disable-line
+        } else {
+            this.props.mosaicStore!.shareMosaic(base64ImageData);
+        }
     }
 }
 

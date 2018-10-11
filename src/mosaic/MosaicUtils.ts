@@ -52,3 +52,20 @@ export async function getImageElementFromUri(imageUri: string): Promise<HTMLImag
         };
     });
 }
+
+export function getCanvasContext(
+    width: number,
+    height: number,
+    canvas?: HTMLCanvasElement | null
+): CanvasRenderingContext2D {
+    if (canvas) {
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+            canvas.width = width;
+            canvas.height = height;
+            return ctx;
+        }
+    }
+
+    throw Error('Failed to get canvas context');
+}
