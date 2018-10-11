@@ -53,13 +53,13 @@ export async function getImageElementFromUri(imageUri: string): Promise<HTMLImag
     });
 }
 
-export function getCanvasContext(
+export function getCanvasContextForDrawing(
     width: number,
     height: number,
     canvas?: HTMLCanvasElement | null
 ): CanvasRenderingContext2D {
     if (canvas) {
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext('2d');
         if (ctx) {
             canvas.width = width;
             canvas.height = height;

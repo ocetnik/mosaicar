@@ -13,8 +13,14 @@ class Share extends React.Component<IShareProps, {}> {
             <div>
                 {
                     linkToUploadedImage !== null
-                        ? <a href={linkToUploadedImage} target='_blank'>{linkToUploadedImage}</a>
-                        : <button onClick={this.props.onShareButtonClick}>Share</button>
+                        ? <div>
+                            <span>Link to uploaded image: </span>
+                            <a href={linkToUploadedImage} target='_blank'>{linkToUploadedImage}</a>
+                        </div>
+                        : <div>
+                            <span>Mosaic image is displayed below original image </span>
+                            <button onClick={this.props.onShareButtonClick}>Share mosaic image</button>
+                        </div>
                 }
             </div>
         );

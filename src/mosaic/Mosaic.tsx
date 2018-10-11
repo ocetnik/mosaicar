@@ -13,7 +13,7 @@ import {
     calculateImageHeight,
     calculateImageWidth,
     getAverageTileColor,
-    getCanvasContext,
+    getCanvasContextForDrawing,
     getImageElementFromUri
 } from "./MosaicUtils";
 import Share from './Share';
@@ -28,6 +28,7 @@ interface IMosaicProps {
 }
 
 interface IMosaicState {
+    canvasImageLoaded: boolean;
     svgMosaicString: string;
 }
 
@@ -38,7 +39,7 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
         imageWidth: number,
         imageHeight: number,
         tiles: JSX.Element[]
-    ) {
+    ): string {
         return renderToString(
             <svg
                 width={imageWidth}
@@ -51,7 +52,7 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
         );
     }
 
-    private static async getPngDataUriFromSvgDocumentElement() {
+    private static async getPngDataUriFromSvgDocumentElement(): Promise<string> {
         return await svgAsPngUri(
             document.getElementById(MOSAIC_SVG_ELEMENT_ID),
             {},
@@ -64,12 +65,18 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
     constructor(props: IMosaicProps) {
         super(props);
         this.state = {
+            canvasImageLoaded: false,
             svgMosaicString: ''
         };
         this.canvasRef = createRef<HTMLCanvasElement>();
         this.handleConvertButtonClick = this.handleConvertButtonClick.bind(this);
         this.handleShareButtonClick = this.handleShareButtonClick.bind(this);
         this.props.mosaicStore!.resetSharedMosaicLink();
+    }
+
+    public async componentDidMount() {
+        await this.drawCanvasImage();
+        this.setState({ canvasImageLoaded: true });
     }
 
     public render() {
@@ -86,10 +93,14 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
                                 Convert image into a mosaic
                             </button>
                         </div>
-                        : <Share
-                            linkToUploadedImage={linkToUploadedImage}
-                            onShareButtonClick={this.handleShareButtonClick}
-                        />
+                        : (
+                            this.state.canvasImageLoaded
+                                ? <Share
+                                    linkToUploadedImage={linkToUploadedImage}
+                                    onShareButtonClick={this.handleShareButtonClick}
+                                />
+                                : <div>Loading original image</div>
+                        )
                 }
                 <div>
                     <canvas ref={this.canvasRef} />
@@ -111,13 +122,18 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
     }
 
     private async getSvgMosaicString(): Promise<string> {
-        const imageElement = await getImageElementFromUri(this.getOrigImageUri());
-        const imageWidth = calculateImageWidth(imageElement.width, TILE_SIZE);
-        const imageHeight = calculateImageHeight(imageElement.height, TILE_SIZE);
-
         const canvas = this.canvasRef.current;
-        const ctx = getCanvasContext(imageWidth, imageHeight, canvas);
-        ctx.drawImage(imageElement, 0, 0);
+        if (!canvas) {
+            throw Error('Cannot get canvas');
+        }
+
+        const imageWidth = canvas.width;
+        const imageHeight = canvas.height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            throw Error('Cannot get canvas context');
+        }
 
         const tiles = [];
         const radius = TILE_SIZE / 2;
@@ -143,12 +159,22 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
         return Mosaic.getSvgMosaicString(imageWidth, imageHeight, tiles);
     }
 
-    private async handleConvertButtonClick() {
+    private async drawCanvasImage(): Promise<void> {
+        const imageElement = await getImageElementFromUri(this.getOrigImageUri());
+        const imageWidth = calculateImageWidth(imageElement.width, TILE_SIZE);
+        const imageHeight = calculateImageHeight(imageElement.height, TILE_SIZE);
+
+        const canvas = this.canvasRef.current;
+        const ctx = getCanvasContextForDrawing(imageWidth, imageHeight, canvas);
+        ctx.drawImage(imageElement, 0, 0);
+    }
+
+    private async handleConvertButtonClick(): Promise<void> {
         const svgMosaicString = await this.getSvgMosaicString();
         this.setState({ svgMosaicString });
     }
 
-    private async handleShareButtonClick() {
+    private async handleShareButtonClick(): Promise<void> {
         const pngDataUri = await Mosaic.getPngDataUriFromSvgDocumentElement();
         const base64ImageData = pngDataUri.replace('data:image/png;base64,', '');
         const fileSize = atob(base64ImageData).length;
