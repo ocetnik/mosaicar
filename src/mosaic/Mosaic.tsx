@@ -7,6 +7,7 @@ import { svgAsPngUri } from 'save-svg-as-png';
 
 import { MAX_IMGUR_API_FILE_UPLOAD_SIZE } from "../imgur/ImgurConstants";
 
+import BackButton from "../common/BackButton";
 import MosaicStore from "./MosaicStore";
 import {
     calculateImageHeight,
@@ -72,21 +73,19 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
     }
 
     public render() {
-        const { goBack } = this.props.routing;
+        const handleBackButtonClick = () => this.props.routing.goBack();
         const linkToUploadedImage = this.props.mosaicStore!.sharedMosaicLink;
-
-        const onBackClick = () => goBack();
 
         return (
             <div>
-                <button onClick={onBackClick}>Back</button>
+                <BackButton onBackButtonClick={handleBackButtonClick} />
                 {
                     this.state.svgMosaicString === ''
-                        ? <button
-                            onClick={this.handleConvertButtonClick}
-                        >
-                            Convert image into a mosaic
-                        </button>
+                        ? <div>
+                            <button onClick={this.handleConvertButtonClick}>
+                                Convert image into a mosaic
+                            </button>
+                        </div>
                         : <Share
                             linkToUploadedImage={linkToUploadedImage}
                             onShareButtonClick={this.handleShareButtonClick}

@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import GalleryStore from "./GalleryStore";
 
+import BackButton from "../common/BackButton";
 import { IImage } from "../imgur/ImgurTypes";
 import ImageThumbnail from "./ImageThumbnail";
 import Pagination from "./Pagination";
@@ -39,15 +40,7 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     }
 
     public render() {
-        const { goBack } = this.props.routing;
-        const onBackClick = () => goBack();
-        const backButton = <button onClick={onBackClick}>Back</button>;
-
-        const pagination = <Pagination
-            onPrevPageClick={this.handlePrevPageClick}
-            onNextPageClick={this.handleNextPageClick}
-            pageNumber={this.state.pageNumber}
-        />;
+        const handleBackButtonClick = () => this.props.routing.goBack();
 
         const renderImages = this.props.galleryStore.images.map(
             (image: IImage) => <ImageThumbnail key={image.id} imageUri={image.link} />
@@ -55,8 +48,12 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
 
         return (
             <div>
-                {backButton}
-                {pagination}
+                <BackButton onBackButtonClick={handleBackButtonClick}/>
+                <Pagination
+                    onPrevPageClick={this.handlePrevPageClick}
+                    onNextPageClick={this.handleNextPageClick}
+                    pageNumber={this.state.pageNumber}
+                />
                 {renderImages}
             </div>
         );
