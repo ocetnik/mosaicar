@@ -18,7 +18,7 @@ class Pagination extends React.Component<IPaginationProps, {}> {
                     disabled={this.props.pageNumber === 1}>
                     Previous page
                 </button>
-                <span>Page: {this.props.pageNumber}</span>
+                <span> Page: {this.props.pageNumber} </span>
                 <button
                     onClick={onNextPageClick}>
                     Next page

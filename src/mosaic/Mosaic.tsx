@@ -83,29 +83,34 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
         const handleBackButtonClick = () => this.props.routing.goBack();
         const linkToUploadedImage = this.props.mosaicStore!.sharedMosaicLink;
 
+        const svgMosaicButtons = this.state.svgMosaicString === ''
+            ? <div>
+                <button onClick={this.handleConvertButtonClick}>
+                    Convert image into a mosaic
+                </button>
+            </div>
+            : <Share
+                linkToUploadedImage={linkToUploadedImage}
+                onShareButtonClick={this.handleShareButtonClick}
+            />;
+
+        const buttons = this.state.canvasImageLoaded
+            ? svgMosaicButtons
+            : <div>Loading original image</div>;
+
+        const image = this.state.svgMosaicString === ''
+            ? <div>
+                <canvas ref={this.canvasRef} />
+            </div>
+            : <div
+                dangerouslySetInnerHTML={{ __html: this.state.svgMosaicString }}
+            />;
+
         return (
             <div>
                 <BackButton onBackButtonClick={handleBackButtonClick} />
-                {
-                    this.state.svgMosaicString === ''
-                        ? <div>
-                            <button onClick={this.handleConvertButtonClick}>
-                                Convert image into a mosaic
-                            </button>
-                        </div>
-                        : (
-                            this.state.canvasImageLoaded
-                                ? <Share
-                                    linkToUploadedImage={linkToUploadedImage}
-                                    onShareButtonClick={this.handleShareButtonClick}
-                                />
-                                : <div>Loading original image</div>
-                        )
-                }
-                <div>
-                    <canvas ref={this.canvasRef} />
-                </div>
-                <div dangerouslySetInnerHTML={{ __html: this.state.svgMosaicString }} />
+                {buttons}
+                {image}
             </div>
         );
     }
