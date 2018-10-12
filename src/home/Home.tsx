@@ -2,6 +2,7 @@ import { inject } from "mobx-react";
 import { RouterStore } from "mobx-react-router";
 import * as React from "react";
 
+import { ChangeEvent } from "react";
 import { GALLERY } from "../routing/RoutingConstants";
 import { getPathToMosaicConversion } from "../routing/RoutingUtils";
 
@@ -13,26 +14,28 @@ interface IHomeProps {
 class Home extends React.Component<IHomeProps, {}> {
     constructor(props: IHomeProps) {
         super(props);
-        this.handleFileChange = this.handleFileChange.bind(this);
+        this.handleOnFileChange = this.handleOnFileChange.bind(this);
+        this.handleOnGalleryButtonClick = this.handleOnGalleryButtonClick.bind(this);
     }
 
     public render() {
-        const onGalleryClick = () => {
-            this.props.routing!.push(GALLERY);
-        };
-
         return (
             <div>
-                <input type="file" onChange={this.handleFileChange} accept="image/*" />
-                <button onClick={onGalleryClick}>
+                <input type="file" onChange={this.handleOnFileChange} accept="image/*" />
+                <button onClick={this.handleOnGalleryButtonClick}>
                     Select image from Imgur gallery
                 </button>
             </div>
         );
     }
 
-    // TODO add types
-    private handleFileChange({ target: { files: [file] } }: any) {
+    private handleOnFileChange(event: ChangeEvent<HTMLInputElement>): void {
+        const files = event.target.files;
+        if (!files) {
+            return
+        }
+
+        const file = files[0];
         if (!file) {
             return;
         }
@@ -45,6 +48,10 @@ class Home extends React.Component<IHomeProps, {}> {
 
         fileReader.readAsDataURL(file);
     }
+
+    private handleOnGalleryButtonClick(): void {
+        this.props.routing!.push(GALLERY);
+    };
 }
 
 export default Home;

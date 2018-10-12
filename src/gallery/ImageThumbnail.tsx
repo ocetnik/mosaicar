@@ -11,22 +11,26 @@ interface IImageThumbnailProps {
 
 @inject('routing')
 class ImageThumbnail extends React.Component<IImageThumbnailProps, {}> {
+    constructor(props: IImageThumbnailProps) {
+        super(props);
+
+        this.handleOnImageClick = this.handleOnImageClick.bind(this);
+    }
+
     public render() {
-        const { imageUri } = this.props;
-
-        const onImageClick = () => {
-            this.props.routing!.push(getPathToMosaicConversion(imageUri));
-        };
-
         return (
             <img
-                srcSet={imageUri}
+                srcSet={this.props.imageUri}
                 width="50"
                 height="50"
-                onClick={onImageClick}
+                onClick={this.handleOnImageClick}
             />
         );
     }
+
+    private handleOnImageClick() {
+        this.props.routing!.push(getPathToMosaicConversion(this.props.imageUri));
+    };
 }
 
 export default ImageThumbnail;

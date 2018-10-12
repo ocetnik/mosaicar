@@ -6,11 +6,9 @@ interface IBackButtonProps {
 
 class BackButton extends React.Component<IBackButtonProps, {}> {
     public render() {
-        const onBackButtonClick = () => this.props.onBackButtonClick();
-
         return (
             <div>
-                <button onClick={onBackButtonClick}>Back</button>
+                <button onClick={this.props.onBackButtonClick}>Back</button>
             </div>
         );
     }

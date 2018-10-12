@@ -8,19 +8,16 @@ interface IPaginationProps {
 
 class Pagination extends React.Component<IPaginationProps, {}> {
     public render() {
-        const onPrevPageClick = () => this.props.onPrevPageClick();
-        const onNextPageClick = () => this.props.onNextPageClick();
-
         return (
             <div>
                 <button
-                    onClick={onPrevPageClick}
+                    onClick={this.props.onPrevPageClick}
                     disabled={this.props.pageNumber === 1}>
                     Previous page
                 </button>
                 <span> Page: {this.props.pageNumber} </span>
                 <button
-                    onClick={onNextPageClick}>
+                    onClick={this.props.onNextPageClick}>
                     Next page
                 </button>
             </div>

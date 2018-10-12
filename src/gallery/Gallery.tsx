@@ -3,8 +3,8 @@ import * as React from 'react';
 import GalleryStore from "./GalleryStore";
 
 import BackButton from "../common/BackButton";
-import { IImage } from "../imgur/ImgurTypes";
-import ImageThumbnail from "./ImageThumbnail";
+import { decreasePageNumber, increasePageNumber } from "./GalleryUtils";
+import ImageThumbnails from "./ImageThumbnails";
 import Pagination from "./Pagination";
 
 interface IGalleryProps {
@@ -12,7 +12,7 @@ interface IGalleryProps {
     routing?: any;
 }
 
-interface IGalleryState {
+export interface IGalleryState {
     pageNumber: number;
 }
 
@@ -25,8 +25,8 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
             pageNumber: 1
         };
 
-        this.handlePrevPageClick = this.handlePrevPageClick.bind(this);
-        this.handleNextPageClick = this.handleNextPageClick.bind(this);
+        this.handleOnPrevPageClick = this.handleOnPrevPageClick.bind(this);
+        this.handleOnNextPageClick = this.handleOnNextPageClick.bind(this);
     }
 
     public componentDidMount() {
@@ -40,21 +40,15 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     }
 
     public render() {
-        const handleBackButtonClick = () => this.props.routing.goBack();
-
-        const renderImages = this.props.galleryStore.images.map(
-            (image: IImage) => <ImageThumbnail key={image.id} imageUri={image.link} />
-        );
-
         return (
             <div>
-                <BackButton onBackButtonClick={handleBackButtonClick}/>
+                <BackButton onBackButtonClick={this.props.routing.goBack}/>
                 <Pagination
-                    onPrevPageClick={this.handlePrevPageClick}
-                    onNextPageClick={this.handleNextPageClick}
+                    onPrevPageClick={this.handleOnPrevPageClick}
+                    onNextPageClick={this.handleOnNextPageClick}
                     pageNumber={this.state.pageNumber}
                 />
-                {renderImages}
+                <ImageThumbnails images={this.props.galleryStore.images} />
             </div>
         );
     }
@@ -63,17 +57,12 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
         this.props.galleryStore.getGalleryImages(this.state.pageNumber);
     }
 
-    private handlePrevPageClick() {
-        const pageNumber = this.state.pageNumber - 1;
-        if (pageNumber < 1) {
-            throw Error('Page number must be greater than 0');
-        }
-        this.setState({ pageNumber });
+    private handleOnPrevPageClick() {
+        this.setState(decreasePageNumber);
     }
 
-    private handleNextPageClick() {
-        const pageNumber = this.state.pageNumber + 1;
-        this.setState({ pageNumber });
+    private handleOnNextPageClick() {
+        this.setState(increasePageNumber);
     }
 }
 
