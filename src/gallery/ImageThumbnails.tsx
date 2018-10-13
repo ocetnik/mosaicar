@@ -1,7 +1,7 @@
-import * as React from "react";
+import * as React from 'react';
 
-import { IImage } from "../imgur/ImgurTypes";
-import ImageThumbnail from "./ImageThumbnail";
+import { IImage } from '../imgur/ImgurTypes';
+import ImageThumbnail from './ImageThumbnail';
 
 interface IImageThumbnailsProps {
     images: IImage[];

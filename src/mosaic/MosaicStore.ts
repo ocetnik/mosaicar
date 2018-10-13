@@ -1,7 +1,7 @@
 import { action, configure, observable, runInAction } from 'mobx';
 
-import { StoreState } from "../app/AppTypes";
-import { uploadImage } from "../imgur/ImgurApi";
+import { StoreState } from '../app/AppTypes';
+import { uploadImage } from '../imgur/ImgurApi';
 
 configure({ enforceActions: 'observed' });
 

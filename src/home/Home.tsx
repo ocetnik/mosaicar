@@ -1,10 +1,10 @@
-import { inject } from "mobx-react";
-import { RouterStore } from "mobx-react-router";
-import * as React from "react";
+import { inject } from 'mobx-react';
+import { RouterStore } from 'mobx-react-router';
+import * as React from 'react';
 
-import { ChangeEvent } from "react";
-import { GALLERY } from "../routing/RoutingConstants";
-import { getPathToMosaicConversion } from "../routing/RoutingUtils";
+import { ChangeEvent } from 'react';
+import { GALLERY } from '../routing/RoutingConstants';
+import { getPathToMosaicConversion } from '../routing/RoutingUtils';
 
 interface IHomeProps {
     routing?: RouterStore;

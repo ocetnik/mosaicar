@@ -1,11 +1,11 @@
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
-import GalleryStore from "./GalleryStore";
+import GalleryStore from './GalleryStore';
 
-import BackButton from "../common/BackButton";
-import { decreasePageNumber, increasePageNumber } from "./GalleryUtils";
-import ImageThumbnails from "./ImageThumbnails";
-import Pagination from "./Pagination";
+import BackButton from '../common/BackButton';
+import { decreasePageNumber, increasePageNumber } from './GalleryUtils';
+import ImageThumbnails from './ImageThumbnails';
+import Pagination from './Pagination';
 
 interface IGalleryProps {
     galleryStore: GalleryStore;

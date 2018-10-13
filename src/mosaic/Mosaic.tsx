@@ -1,22 +1,22 @@
 import { Location } from 'history';
-import { inject, observer } from "mobx-react";
-import * as React from "react";
-import { createRef, RefObject } from "react";
+import { inject, observer } from 'mobx-react';
+import * as React from 'react';
+import { createRef, RefObject } from 'react';
 import { renderToString } from 'react-dom/server';
 import { svgAsPngUri } from 'save-svg-as-png';
 
-import { MAX_IMGUR_API_FILE_UPLOAD_SIZE } from "../imgur/ImgurConstants";
+import { MAX_IMGUR_API_FILE_UPLOAD_SIZE } from '../imgur/ImgurConstants';
 
-import BackButton from "../common/BackButton";
-import MosaicControlButtons from "./MosaicControlButtons";
-import MosaicImage from "./MosaicImage";
-import MosaicStore from "./MosaicStore";
+import BackButton from '../common/BackButton';
+import MosaicControlButtons from './MosaicControlButtons';
+import MosaicImage from './MosaicImage';
+import MosaicStore from './MosaicStore';
 import {
     calculateNewImageEdgeLength,
     getAverageTileColor,
     getCanvasContextForDrawing,
     getImageElementFromUri
-} from "./MosaicUtils";
+} from './MosaicUtils';
 
 const MOSAIC_SVG_ELEMENT_ID = 'mosaic-image';
 const TILE_SIZE = 16;

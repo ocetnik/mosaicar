@@ -1,5 +1,5 @@
-import * as React from "react";
-import { RefObject } from "react";
+import * as React from 'react';
+import { RefObject } from 'react';
 
 interface IMosaicImageProps {
     canvasRef: RefObject<HTMLCanvasElement>;

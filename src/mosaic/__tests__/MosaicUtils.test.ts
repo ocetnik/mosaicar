@@ -2,7 +2,7 @@ import {
     calculateNewImageEdgeLength,
     getAverageTileColor, getCanvasContextForDrawing,
     rgbToHex
-} from "../MosaicUtils";
+} from '../MosaicUtils';
 
 describe('calculateNewImageEdgeLength', () => {
     test('returns 32 when orig image edge length is 40 and tile size is 16', () => {

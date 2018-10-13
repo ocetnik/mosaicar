@@ -1,4 +1,4 @@
-import { decreasePageNumber, increasePageNumber } from "../GalleryUtils";
+import { decreasePageNumber, increasePageNumber } from '../GalleryUtils';
 
 describe('decreasePageNumber', () => {
     test('returns 1 when actual page number is 2', () => {

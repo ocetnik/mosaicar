@@ -1,6 +1,6 @@
-import { inject, observer } from "mobx-react";
-import * as React from "react";
-import MosaicStore from "./MosaicStore";
+import { inject, observer } from 'mobx-react';
+import * as React from 'react';
+import MosaicStore from './MosaicStore';
 
 interface IShareProps {
     mosaicStore?: MosaicStore;
@@ -23,7 +23,7 @@ class Share extends React.Component<IShareProps, {}> {
                     linkToUploadedImage !== null
                         ? <div>
                             <span>Link to uploaded image: </span>
-                            <a href={linkToUploadedImage} target='_blank'>{linkToUploadedImage}</a>
+                            <a href={linkToUploadedImage} target="_blank">{linkToUploadedImage}</a>
                         </div>
                         : <div>
                             <button onClick={this.props.onShareButtonClick}>

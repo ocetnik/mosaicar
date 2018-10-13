@@ -1,5 +1,5 @@
-import * as React from "react";
-import Share from "./Share";
+import * as React from 'react';
+import Share from './Share';
 
 interface IMosaicControlButtonsProps {
     canvasImageLoaded: boolean;

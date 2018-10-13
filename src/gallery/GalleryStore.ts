@@ -1,8 +1,8 @@
 import { action, configure, observable, runInAction } from 'mobx';
 
-import { StoreState } from "../app/AppTypes";
-import { fetchGallery } from "../imgur/ImgurApi";
-import { IImage } from "../imgur/ImgurTypes";
+import { StoreState } from '../app/AppTypes';
+import { fetchGallery } from '../imgur/ImgurApi';
+import { IImage } from '../imgur/ImgurTypes';
 
 configure({ enforceActions: 'observed' });
 

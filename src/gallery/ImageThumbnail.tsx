@@ -1,8 +1,8 @@
-import { inject } from "mobx-react";
-import * as React from "react";
+import { inject } from 'mobx-react';
+import * as React from 'react';
 
-import { RouterStore } from "mobx-react-router";
-import { getPathToMosaicConversion } from "../routing/RoutingUtils";
+import { RouterStore } from 'mobx-react-router';
+import { getPathToMosaicConversion } from '../routing/RoutingUtils';
 
 interface IImageThumbnailProps {
     routing?: RouterStore;

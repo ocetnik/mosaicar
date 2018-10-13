@@ -1,4 +1,4 @@
-import { MOSAIC } from "./RoutingConstants";
+import { MOSAIC } from './RoutingConstants';
 
 export function getPathToMosaicConversion(imageUri: string) {
     return {

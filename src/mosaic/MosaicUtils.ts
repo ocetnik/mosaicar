@@ -6,10 +6,10 @@ export function calculateNewImageEdgeLength(origImgEdgeLength: number, tileSize:
 export function rgbToHex(r: number, g: number, b: number): string {
     function componentToHex(component: number) {
         const hex = component.toString(16);
-        return hex.length === 1 ? "0" + hex : hex;
+        return hex.length === 1 ? '0' + hex : hex;
     }
 
-    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+    return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
 export function getAverageTileColor(data: Uint8ClampedArray): string {

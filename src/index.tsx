@@ -6,8 +6,8 @@ import * as ReactDOM from 'react-dom';
 import { Router } from 'react-router';
 
 import App from './app/App';
-import GalleryStore from "./gallery/GalleryStore";
-import MosaicStore from "./mosaic/MosaicStore";
+import GalleryStore from './gallery/GalleryStore';
+import MosaicStore from './mosaic/MosaicStore';
 import registerServiceWorker from './registerServiceWorker';
 
 import './index.css';

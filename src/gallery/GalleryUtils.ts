@@ -1,4 +1,4 @@
-import { IGalleryState } from "./Gallery";
+import { IGalleryState } from './Gallery';
 
 export function decreasePageNumber(state: IGalleryState): IGalleryState {
     const pageNumber = state.pageNumber - 1;
