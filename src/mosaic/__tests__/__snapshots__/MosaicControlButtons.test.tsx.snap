@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MosaicControlButtons Show Convert button when canvasImageLoaded === true && mosaicSvgString === '' 1`] = `
+<div>
+  <button
+    onClick={[Function]}
+  >
+    Convert image into a mosaic
+  </button>
+</div>
+`;
+
+exports[`MosaicControlButtons Show loading when canvasImageLoaded === false 1`] = `
+<div>
+  Loading original image
+</div>
+`;

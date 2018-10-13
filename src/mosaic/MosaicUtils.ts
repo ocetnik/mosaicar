@@ -1,14 +1,9 @@
-// final (mosaic) image width will be multiple of tile size to avoid incomplete tiles
-export function calculateImageWidth(origImgWidth: number, tileSize: number): number {
-    return Math.floor(origImgWidth / tileSize) * tileSize;
+// final (mosaic) image edge length will be multiple of tile size to avoid incomplete tiles
+export function calculateNewImageEdgeLength(origImgEdgeLength: number, tileSize: number): number {
+    return Math.floor(origImgEdgeLength / tileSize) * tileSize;
 }
 
-// final (mosaic) image height will be multiple of tile size to avoid incomplete tiles
-export function calculateImageHeight(origImgHeight: number, tileSize: number): number {
-    return Math.floor(origImgHeight / tileSize) * tileSize;
-}
-
-function rgbToHex(r: number, g: number, b: number): string {
+export function rgbToHex(r: number, g: number, b: number): string {
     function componentToHex(component: number) {
         const hex = component.toString(16);
         return hex.length === 1 ? "0" + hex : hex;
@@ -17,8 +12,7 @@ function rgbToHex(r: number, g: number, b: number): string {
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-export function getAverageTileColor(tile: ImageData): string {
-    const data = tile.data;
+export function getAverageTileColor(data: Uint8ClampedArray): string {
     const dataLength = data.length;
     const pixelLength = dataLength / 4;
 

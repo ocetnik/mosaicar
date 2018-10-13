@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pagination Back button is disabled when pageNumber=1 1`] = `
+<div>
+  <button
+    disabled={true}
+    onClick={[Function]}
+  >
+    Previous page
+  </button>
+  <span>
+     Page: 
+    1
+     
+  </span>
+  <button
+    onClick={[Function]}
+  >
+    Next page
+  </button>
+</div>
+`;
+
+exports[`Pagination Back button is enabled when pageNumber=2 1`] = `
+<div>
+  <button
+    disabled={false}
+    onClick={[Function]}
+  >
+    Previous page
+  </button>
+  <span>
+     Page: 
+    2
+     
+  </span>
+  <button
+    onClick={[Function]}
+  >
+    Next page
+  </button>
+</div>
+`;

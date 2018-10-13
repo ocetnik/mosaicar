@@ -12,8 +12,7 @@ import MosaicControlButtons from "./MosaicControlButtons";
 import MosaicImage from "./MosaicImage";
 import MosaicStore from "./MosaicStore";
 import {
-    calculateImageHeight,
-    calculateImageWidth,
+    calculateNewImageEdgeLength,
     getAverageTileColor,
     getCanvasContextForDrawing,
     getImageElementFromUri
@@ -130,7 +129,7 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
         for (let sx = 0; sx < imageWidth; sx += TILE_SIZE) {
             for (let sy = 0; sy < imageHeight; sy += TILE_SIZE) {
                 const origTile = ctx.getImageData(sx, sy, TILE_SIZE, TILE_SIZE);
-                const avgColor = getAverageTileColor(origTile);
+                const avgColor = getAverageTileColor(origTile.data);
 
                 tiles.push(
                     <ellipse
@@ -150,8 +149,8 @@ class Mosaic extends React.Component<IMosaicProps, IMosaicState> {
 
     private async drawCanvasImage(): Promise<void> {
         const imageElement = await getImageElementFromUri(this.getOrigImageUri());
-        const imageWidth = calculateImageWidth(imageElement.width, TILE_SIZE);
-        const imageHeight = calculateImageHeight(imageElement.height, TILE_SIZE);
+        const imageWidth = calculateNewImageEdgeLength(imageElement.width, TILE_SIZE);
+        const imageHeight = calculateNewImageEdgeLength(imageElement.height, TILE_SIZE);
 
         const canvas = this.canvasRef.current;
         const ctx = getCanvasContextForDrawing(imageWidth, imageHeight, canvas);
