@@ -32,8 +32,7 @@ yarn test
 #### Areas for improvement
  - type props (routing and MobX stores) from MobX Provider correctly
 	 - don't use optional properties in component props interfaces
-	 - don't use [TypeScript Non-null assertion operator](https://github
- .com/Microsoft/TypeScript/wiki/What's-new-in-TypeScript#non-null-assertion-operator)
+	 - don't use [TypeScript Non-null assertion operator](https://github.com/Microsoft/TypeScript/wiki/What's-new-in-TypeScript#non-null-assertion-operator)
  - cancel promises in gallery paging (don't wait for each response when a user clicks very fast on the next page button)
  - rewrite MobX actions from async/await to [flows](https://mobx.js.org/best/actions.html#flows)
  - use server side rendering
